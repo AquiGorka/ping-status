@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <title>Ping Status</title>
+    <script>
+      const DEFAULT_URL = 'PLACE_YOUR_URL_HERE'
+      const sp = new URLSearchParams(document.location.search)
+      const DELTA = sp.has('d') ? parseInt(sp.get('d'), 10) : 10
+      const URL = sp.has('u') ? sp.get('u') : DEFAULT_URL
+      document.addEventListener("DOMContentLoaded", () => {
+        // status
+        setInterval(async () => {
+          console.log('fetch')
+          let status
+          try {
+            const res = await fetch(URL)
+            console.log(res)
+            status = res.ok
+          } catch(e) {}
+          const elem = document.querySelector('#status')
+          elem.innerHTML = status ? 'Response OK' : 'No response'
+          elem.removeAttribute('class')
+          elem.setAttribute('class', status ? 'ok' : 'notok')
+        }, DELTA * 1000)
+        // msg
+        let current = DELTA
+        const msg = document.querySelector('#msg')
+        msg.innerHTML = DELTA
+        setInterval(() => {
+          current--
+          if (current === 0) {
+            current = DELTA
+          }
+          msg.innerHTML = current
+        }, 1000)
+      })
+    </script>
+    <style>
+      .ok{
+        color: green;
+      }
+      .notok{
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="status">Loading</div>
+    <div>waiting <span id="msg"></span></div>
+  </body>
+</html>
